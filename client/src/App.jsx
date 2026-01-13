@@ -2,8 +2,8 @@ import React from 'react'
 
 const App = () => {
   return (
-    <div>
-      hello.................................
+    <div className='text-amber-700 hover:hidden'>
+      fontend basic configuration .................................
     </div>
   )
 }

@@ -22,12 +22,21 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+Thumbs.db
 
 
+# build
+build/
+dist/
 
-
-
-#files
+# environment variables
 .env
+.env.*
+!.env.example
 application.properties
-node_modules
+application.yml
+
+
+# Maven
+target/
+*.class
