@@ -1,4 +1,4 @@
-package com.pigeon.pigeon_chat.auth;
+package com.pigeon.pigeon_chat.auth.controller;
 
 import java.util.Map;
 
@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pigeon.pigeon_chat.dto.request.SignupRequest;
-import com.pigeon.pigeon_chat.dto.response.LoginRequest;
+import com.pigeon.pigeon_chat.auth.dto.LoginRequest;
+import com.pigeon.pigeon_chat.auth.dto.SignupRequest;
+import com.pigeon.pigeon_chat.auth.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
 

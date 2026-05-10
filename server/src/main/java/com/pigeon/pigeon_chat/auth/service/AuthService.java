@@ -1,13 +1,13 @@
-package com.pigeon.pigeon_chat.auth;
+package com.pigeon.pigeon_chat.auth.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.pigeon.pigeon_chat.util.JwtUtil;
-import com.pigeon.pigeon_chat.dto.request.SignupRequest;
-import com.pigeon.pigeon_chat.dto.response.LoginRequest;
-import com.pigeon.pigeon_chat.entity.User;
-import com.pigeon.pigeon_chat.repository.UserRepository;
+import com.pigeon.pigeon_chat.auth.dto.LoginRequest;
+import com.pigeon.pigeon_chat.auth.dto.SignupRequest;
+import com.pigeon.pigeon_chat.user.entity.User;
+import com.pigeon.pigeon_chat.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 

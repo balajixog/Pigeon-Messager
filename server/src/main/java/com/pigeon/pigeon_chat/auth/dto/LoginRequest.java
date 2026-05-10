@@ -1,4 +1,4 @@
-package com.pigeon.pigeon_chat.dto.response;
+package com.pigeon.pigeon_chat.auth.dto;
 
 import lombok.Data;
 
