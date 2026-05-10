@@ -1,4 +1,4 @@
-package com.pigeon.pigeon_chat.entity;
+package com.pigeon.pigeon_chat.user.entity;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class User {
 
     private String password;
 
-    private String role = "USER";
+    private String role = "ADMIN";
 
     private boolean emailVerified = false;
 
