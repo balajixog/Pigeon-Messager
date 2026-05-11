@@ -1,11 +1,11 @@
 import React from 'react'
+import ChatPage from "./features/chat/pages/ChatPage";
 
 const App = () => {
   return (
-    <div className='text-amber-700 hover:hidden'>
-      fontend basic configuration .................................
-    </div>
+    
+    <ChatPage />
   )
 }
 
-export default App
+export default App;
