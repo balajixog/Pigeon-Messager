@@ -2,11 +2,24 @@ package com.pigeon.pigeon_chat.websocket.dto;
 
 public class ChatMessage {
 
+    private String clientId;
+
     private String sender;
 
     private String content;
 
     private String type;
+
+    private String timestamp;
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+    public void setTimestamp(
+        String timestamp
+) {
+    this.timestamp = timestamp;
+    }
 
     public String getSender() {
         return sender;
@@ -31,4 +44,14 @@ public class ChatMessage {
     public void setType(String type) {
         this.type = type;
     }
+    public String getClientId() {
+
+        return clientId;
+    }
+    public void setClientId(
+        String clientId
+) {
+
+    this.clientId = clientId;
+}
 }
