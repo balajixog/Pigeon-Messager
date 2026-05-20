@@ -8,7 +8,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -22,67 +22,29 @@ public class JwtUtil {
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.expiration}") long expiration
     ) {
-
         this.secretKey = Keys.hmacShaKeyFor(
                 secret.getBytes(StandardCharsets.UTF_8)
         );
-
         this.expiration = expiration;
     }
 
-    public String generateToken(
-            String email,
-            String role
-    ) {
-
+    public String generateToken(String email, String role , String username) {
         return Jwts.builder()
                 .subject(email)
-                .claim("role", "ROLE_" + role)
+                .claim("username", username)
+                .claim("role", role)          // store raw: "ADMIN", not "ROLE_ADMIN"
                 .issuedAt(new Date())
-                .expiration(
-                        new Date(
-                                System.currentTimeMillis()
-                                        + expiration
-                        )
-                )
+                .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)
                 .compact();
     }
 
-    public boolean validateToken(String token) {
-
-        try {
-
-            Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token);
-
-            return true;
-
-        } catch (JwtException e) {
-
-            return false;
-        }
-    }
-
-    public String extractEmail(String token) {
-
+    public Claims extractClaims(String token) {
+        // throws JwtException if expired or invalid — caller handles it
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
-    }
-
-    public String extractRole(String token) {
-
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .get("role", String.class);
+                .getPayload();
     }
 }
