@@ -16,75 +16,38 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final JwtUtil jwtUtil;
 
-    public String signup(
-            SignupRequest request
-    ) {
+    public String signup(SignupRequest request) {
 
-        if (userRepository.existsByEmail(
-                request.getEmail()
-        )) {
-
-            throw new RuntimeException(
-                    "Email already exists"
-            );
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
         }
 
         User user = new User();
-
-        user.setUsername(
-                request.getUsername()
-        );
-
-        user.setEmail(
-                request.getEmail()
-        );
-
-        user.setPassword(
-                passwordEncoder.encode(
-                        request.getPassword()
-                )
-        );
-
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
 
         return "User registered";
     }
 
-    public String login(
-            LoginRequest request
-    ) {
+    public String login(LoginRequest request) {
 
         User user = userRepository
-                .findByEmail(
-                        request.getEmail()
-                )
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "User not found"
-                        )
-                );
+                .findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        boolean matches =
-                passwordEncoder.matches(
-                        request.getPassword(),
-                        user.getPassword()
-                );
-
-        if (!matches) {
-
-            throw new RuntimeException(
-                    "Invalid password"
-            );
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid password");
         }
 
         return jwtUtil.generateToken(
                 user.getEmail(),
-                user.getRole()
+                user.getRole(),
+                user.getUsername()  // ← added
         );
     }
 }
