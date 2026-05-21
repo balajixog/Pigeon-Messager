@@ -15,10 +15,8 @@ function SignupPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
       await api.post("/auth/signup", { username, email, password });
-      // Auto-login after signup: redirect to login with a success hint
       navigate("/login?registered=true");
     } catch (err) {
       const msg =
@@ -32,20 +30,42 @@ function SignupPage() {
   };
 
   return (
-    <div style={styles.root}>
-      <div style={styles.grid} aria-hidden="true" />
-      <div style={styles.blob1} aria-hidden="true" />
-      <div style={styles.blob2} aria-hidden="true" />
+    <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-6 relative overflow-hidden">
+      {/* Grid */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+      />
+
+      {/* Blobs */}
+      <div
+        className="absolute -top-20 -left-24 w-80 h-80 rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(56,189,248,.1) 0%, transparent 70%)",
+        }}
+      />
+      <div
+        className="absolute -bottom-20 -right-14 w-64 h-64 rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(124,58,237,.1) 0%, transparent 70%)",
+        }}
+      />
 
       <motion.div
         initial={{ opacity: 0, y: 32 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        style={styles.card}
+        className="relative z-10 w-full max-w-sm bg-white/[.04] border border-white/[.08] rounded-2xl p-9 backdrop-blur-xl"
       >
-        {/* Logo mark */}
-        <div style={styles.logoRow}>
-          <div style={styles.logoMark}>
+        {/* Logo */}
+        <div className="flex items-center gap-2 mb-7">
+          <div className="w-8 h-8 rounded-lg bg-white/[.06] border border-white/10 flex items-center justify-center">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path
                 d="M2 9C2 5.13 5.13 2 9 2s7 3.13 7 7-3.13 7-7 7-7-3.13-7-7Z"
@@ -64,15 +84,26 @@ function SignupPage() {
               />
             </svg>
           </div>
-          <span style={styles.logoText}>pigeon</span>
+          <span className="text-sm font-semibold text-[#e2e0d8] tracking-widest">
+            pigeon
+          </span>
         </div>
 
-        <div style={styles.headingBlock}>
-          <h1 style={styles.heading}>Create account</h1>
-          <p style={styles.sub}>Join Pigeon and start messaging</p>
+        {/* Heading */}
+        <div className="mb-7">
+          <h1 className="text-xl font-bold text-[#f0ede6] tracking-tight leading-tight">
+            Create account
+          </h1>
+          <p className="text-xs text-white/40 mt-1.5">
+            Join Pigeon and start messaging
+          </p>
         </div>
 
-        <form onSubmit={handleSignup} style={styles.form} noValidate>
+        <form
+          onSubmit={handleSignup}
+          className="flex flex-col gap-4"
+          noValidate
+        >
           <Field label="Username">
             <input
               type="text"
@@ -81,9 +112,7 @@ function SignupPage() {
               placeholder="Balaji"
               required
               autoComplete="username"
-              style={styles.input}
-              onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
-              onBlur={(e) => Object.assign(e.target.style, styles.inputBlur)}
+              className="w-full bg-white/[.05] border border-white/[.08] rounded-lg px-3.5 py-2.5 text-sm text-[#f0ede6] placeholder-white/20 outline-none focus:border-sky-400/50 focus:ring-2 focus:ring-sky-400/10 focus:bg-white/[.07] transition"
             />
           </Field>
 
@@ -95,9 +124,7 @@ function SignupPage() {
               placeholder="you@example.com"
               required
               autoComplete="email"
-              style={styles.input}
-              onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
-              onBlur={(e) => Object.assign(e.target.style, styles.inputBlur)}
+              className="w-full bg-white/[.05] border border-white/[.08] rounded-lg px-3.5 py-2.5 text-sm text-[#f0ede6] placeholder-white/20 outline-none focus:border-sky-400/50 focus:ring-2 focus:ring-sky-400/10 focus:bg-white/[.07] transition"
             />
           </Field>
 
@@ -109,9 +136,7 @@ function SignupPage() {
               placeholder="••••••••"
               required
               autoComplete="new-password"
-              style={styles.input}
-              onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
-              onBlur={(e) => Object.assign(e.target.style, styles.inputBlur)}
+              className="w-full bg-white/[.05] border border-white/[.08] rounded-lg px-3.5 py-2.5 text-sm text-[#f0ede6] placeholder-white/20 outline-none focus:border-sky-400/50 focus:ring-2 focus:ring-sky-400/10 focus:bg-white/[.07] transition"
             />
           </Field>
 
@@ -119,7 +144,7 @@ function SignupPage() {
             <motion.p
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              style={styles.error}
+              className="text-xs text-red-400 bg-red-400/[.08] border border-red-400/20 rounded-lg px-3 py-2.5"
             >
               {error}
             </motion.p>
@@ -128,18 +153,23 @@ function SignupPage() {
           <motion.button
             type="submit"
             disabled={loading}
-            style={
-              loading ? { ...styles.btn, ...styles.btnDisabled } : styles.btn
-            }
             whileTap={{ scale: 0.98 }}
+            className="mt-1 w-full py-2.5 rounded-lg bg-[#f0ede6] text-zinc-950 text-sm font-semibold tracking-tight flex items-center justify-center min-h-[42px] disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
-            {loading ? <span style={styles.spinner} /> : "Create account"}
+            {loading ? (
+              <span className="w-4 h-4 border-2 border-zinc-900/20 border-t-zinc-900 rounded-full animate-spin" />
+            ) : (
+              "Create account"
+            )}
           </motion.button>
         </form>
 
-        <p style={styles.footerText}>
+        <p className="text-center text-xs text-white/30 mt-6">
           Already have an account?{" "}
-          <Link to="/login" style={styles.link}>
+          <Link
+            to="/login"
+            className="text-white/60 font-medium border-b border-white/20 pb-px hover:text-white/80 transition"
+          >
             Sign in
           </Link>
         </p>
@@ -150,200 +180,13 @@ function SignupPage() {
 
 function Field({ label, children }) {
   return (
-    <div style={styles.field}>
-      <label style={styles.label}>{label}</label>
+    <div className="flex flex-col gap-1.5">
+      <label className="text-[11px] font-medium text-white/40 uppercase tracking-widest">
+        {label}
+      </label>
       {children}
     </div>
   );
 }
-
-const styles = {
-  root: {
-    minHeight: "100vh",
-    background: "#0c0c0e",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "24px",
-    position: "relative",
-    overflow: "hidden",
-    fontFamily: "'DM Sans', sans-serif",
-  },
-  grid: {
-    position: "absolute",
-    inset: 0,
-    backgroundImage:
-      "linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px)",
-    backgroundSize: "48px 48px",
-    pointerEvents: "none",
-  },
-  blob1: {
-    position: "absolute",
-    top: "-80px",
-    left: "-100px",
-    width: "380px",
-    height: "380px",
-    borderRadius: "50%",
-    background:
-      "radial-gradient(circle, rgba(56,189,248,.1) 0%, transparent 70%)",
-    pointerEvents: "none",
-  },
-  blob2: {
-    position: "absolute",
-    bottom: "-80px",
-    right: "-60px",
-    width: "300px",
-    height: "300px",
-    borderRadius: "50%",
-    background:
-      "radial-gradient(circle, rgba(124,58,237,.1) 0%, transparent 70%)",
-    pointerEvents: "none",
-  },
-  card: {
-    width: "100%",
-    maxWidth: "400px",
-    background: "rgba(255,255,255,.04)",
-    border: "1px solid rgba(255,255,255,.08)",
-    borderRadius: "16px",
-    padding: "36px",
-    backdropFilter: "blur(12px)",
-    position: "relative",
-    zIndex: 1,
-  },
-  logoRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    marginBottom: "28px",
-  },
-  logoMark: {
-    width: "32px",
-    height: "32px",
-    borderRadius: "8px",
-    background: "rgba(255,255,255,.06)",
-    border: "1px solid rgba(255,255,255,.1)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  logoText: {
-    fontSize: "15px",
-    fontWeight: 600,
-    color: "#e2e0d8",
-    letterSpacing: "0.04em",
-  },
-  headingBlock: {
-    marginBottom: "28px",
-  },
-  heading: {
-    fontSize: "22px",
-    fontWeight: 700,
-    color: "#f0ede6",
-    margin: 0,
-    letterSpacing: "-0.02em",
-    lineHeight: 1.2,
-  },
-  sub: {
-    fontSize: "13px",
-    color: "rgba(255,255,255,.38)",
-    marginTop: "6px",
-    fontWeight: 400,
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "16px",
-  },
-  field: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "6px",
-  },
-  label: {
-    fontSize: "12px",
-    fontWeight: 500,
-    color: "rgba(255,255,255,.45)",
-    letterSpacing: "0.05em",
-    textTransform: "uppercase",
-  },
-  input: {
-    background: "rgba(255,255,255,.05)",
-    border: "1px solid rgba(255,255,255,.08)",
-    borderRadius: "8px",
-    padding: "10px 13px",
-    fontSize: "14px",
-    color: "#f0ede6",
-    outline: "none",
-    width: "100%",
-    boxSizing: "border-box",
-    transition: "border-color 0.15s, box-shadow 0.15s",
-    fontFamily: "inherit",
-  },
-  inputFocus: {
-    borderColor: "rgba(56,189,248,.5)",
-    boxShadow: "0 0 0 3px rgba(56,189,248,.1)",
-    background: "rgba(255,255,255,.07)",
-  },
-  inputBlur: {
-    borderColor: "rgba(255,255,255,.08)",
-    boxShadow: "none",
-    background: "rgba(255,255,255,.05)",
-  },
-  error: {
-    fontSize: "13px",
-    color: "#f87171",
-    background: "rgba(248,113,113,.08)",
-    border: "1px solid rgba(248,113,113,.2)",
-    borderRadius: "7px",
-    padding: "9px 12px",
-    margin: 0,
-  },
-  btn: {
-    marginTop: "4px",
-    width: "100%",
-    padding: "11px",
-    borderRadius: "8px",
-    background: "#f0ede6",
-    color: "#0c0c0e",
-    fontSize: "14px",
-    fontWeight: 600,
-    border: "none",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    letterSpacing: "0.01em",
-    transition: "background 0.15s",
-    fontFamily: "inherit",
-    minHeight: "42px",
-  },
-  btnDisabled: {
-    background: "rgba(240,237,230,.4)",
-    cursor: "not-allowed",
-  },
-  spinner: {
-    width: "16px",
-    height: "16px",
-    border: "2px solid rgba(12,12,14,.2)",
-    borderTopColor: "#0c0c0e",
-    borderRadius: "50%",
-    animation: "spin 0.7s linear infinite",
-    display: "inline-block",
-  },
-  footerText: {
-    textAlign: "center",
-    fontSize: "13px",
-    color: "rgba(255,255,255,.3)",
-    marginTop: "22px",
-    marginBottom: 0,
-  },
-  link: {
-    color: "rgba(255,255,255,.65)",
-    textDecoration: "none",
-    fontWeight: 500,
-    borderBottom: "1px solid rgba(255,255,255,.2)",
-    paddingBottom: "1px",
-  },
-};
 
 export default SignupPage;
