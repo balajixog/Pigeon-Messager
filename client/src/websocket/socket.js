@@ -1,16 +1,14 @@
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 
-const socket = new SockJS("http://localhost:8080/ws");
-
-const stompClient = new Client({
-  webSocketFactory: () => socket,
-
-  reconnectDelay: 5000,
-
-  debug: (str) => {
-    console.log(str);
-  },
-});
-
-export default stompClient;
+export function createStompClient() {
+  const token = localStorage.getItem("token");
+  return new Client({
+    webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+    connectHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
+    reconnectDelay: 5000,
+    debug: (str) => console.log(str),
+  });
+}

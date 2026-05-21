@@ -1,24 +1,26 @@
-import { useEffect, useState } from "react";
-import stompClient from "@/websocket/socket";
+import { useEffect, useState, useRef } from "react";
+import { createStompClient } from "@/websocket/socket";
 import api from "../../../api/axios";
 
 function useSocket(currentUser) {
   const [messages, setMessages] = useState([]);
   const [typingUser, setTypingUser] = useState("");
+  const clientRef = useRef(null);
 
   useEffect(() => {
+    if (!currentUser) return;
+
     let messageSub;
     let typingSub;
+    console.log("1. currentUser:", currentUser);
+    console.log("2. token:", localStorage.getItem("token"));
+    const stompClient = createStompClient();
+    clientRef.current = stompClient;
 
     const fetchMessages = async () => {
       try {
         const response = await api.get("/messages");
-        setMessages(
-          response.data.map((msg) => ({
-            ...msg,
-            pending: false,
-          })),
-        );
+        setMessages(response.data.map((msg) => ({ ...msg, pending: false })));
       } catch (error) {
         console.error("Failed to load messages", error);
       }
@@ -68,41 +70,35 @@ function useSocket(currentUser) {
   }, [currentUser]);
 
   const sendMessage = (message) => {
+    const stompClient = clientRef.current;
     if (!message.trim()) return;
-    if (!stompClient.connected) return;
+    if (!stompClient?.connected) return;
 
     const clientId = crypto.randomUUID();
 
-    // optimistic message — sender shown locally, backend confirms real sender
-    const optimisticMessage = {
-      clientId,
-      sender: currentUser,
-      content: message,
-      type: "CHAT",
-      pending: true,
-    };
-
-    setMessages((prev) => [...prev, optimisticMessage]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        clientId,
+        sender: currentUser,
+        content: message,
+        type: "CHAT",
+        pending: true,
+      },
+    ]);
 
     stompClient.publish({
       destination: "/app/chat.send",
-      body: JSON.stringify({
-        clientId,
-        content: message,
-        type: "CHAT",
-        // sender removed — backend sets it from JWT
-      }),
+      body: JSON.stringify({ clientId, content: message, type: "CHAT" }),
     });
   };
 
   const sendTyping = (typing) => {
-    if (!stompClient.connected) return;
+    const stompClient = clientRef.current;
+    if (!stompClient?.connected) return;
     stompClient.publish({
       destination: "/app/chat.typing",
-      body: JSON.stringify({
-        typing,
-        // sender removed — backend sets it from JWT
-      }),
+      body: JSON.stringify({ typing }),
     });
   };
 
