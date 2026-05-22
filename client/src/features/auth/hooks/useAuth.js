@@ -23,7 +23,12 @@ function useAuth() {
     fetchUser();
   }, []);
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      // ignore — logout locally regardless
+    }
     localStorage.removeItem("token");
     window.location.href = "/login";
   };
