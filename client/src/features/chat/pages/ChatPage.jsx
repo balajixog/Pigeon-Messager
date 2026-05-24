@@ -9,9 +9,9 @@ import TypingIndicator from "../components/TypingIndicator";
 import useAuth from "@/features/auth/hooks/useAuth";
 
 function ChatPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, logout } = useAuth();
   const currentUser = user?.username || "";
-  const { messages, sendMessage, typingUser, sendTyping } =
+  const { messages, sendMessage, typingUser, sendTyping, users } =
     useSocket(currentUser);
   const bottomRef = useRef(null);
 
@@ -28,7 +28,10 @@ function ChatPage() {
   }
 
   return (
-    <ChatLayout sidebar={<ChatSidebar />} header={<ChatHeader />}>
+    <ChatLayout
+      sidebar={<ChatSidebar user={user} users={users} />}
+      header={<ChatHeader user={user} logout={logout} users={users} />}
+    >
       <div className="flex flex-col h-full">
         <div className="flex flex-col gap-2 p-4 overflow-y-auto flex-1">
           {messages.map((msg) => (

@@ -1,11 +1,8 @@
-import useAuth from "@/features/auth/hooks/useAuth";
-
-function ChatHeader() {
-  const { user, logout } = useAuth();
+function ChatHeader({ user, logout, users = [] }) {
+  const onlineCount = users.filter((u) => u.online).length;
 
   return (
     <div className="flex items-center justify-between">
-      {/* Left — chat info */}
       <div className="flex items-center gap-3">
         <div className="relative">
           <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center text-sm font-semibold text-zinc-200">
@@ -17,13 +14,13 @@ function ChatHeader() {
           <h2 className="font-semibold text-sm text-white leading-tight">
             General Chat
           </h2>
-          <p className="text-xs text-emerald-400 leading-tight">Online</p>
+          <p className="text-xs text-emerald-400 leading-tight">
+            {onlineCount} online
+          </p>
         </div>
       </div>
 
-      {/* Right — user + logout */}
       <div className="flex items-center gap-2">
-        {/* Username */}
         {user && (
           <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-zinc-800/60 border border-zinc-700/40">
             <div className="w-5 h-5 rounded-full bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
@@ -37,7 +34,6 @@ function ChatHeader() {
           </div>
         )}
 
-        {/* Search */}
         <button className="w-8 h-8 rounded-lg hover:bg-zinc-800 transition-colors flex items-center justify-center text-zinc-400 hover:text-zinc-200">
           <svg
             width="16"
@@ -52,7 +48,6 @@ function ChatHeader() {
           </svg>
         </button>
 
-        {/* Logout */}
         <button
           onClick={logout}
           className="w-8 h-8 rounded-lg hover:bg-red-500/10 transition-colors flex items-center justify-center text-zinc-400 hover:text-red-400"

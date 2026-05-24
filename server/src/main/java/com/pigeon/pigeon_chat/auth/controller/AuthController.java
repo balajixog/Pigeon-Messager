@@ -22,25 +22,21 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(
-            @RequestBody SignupRequest request
-    ) {
+    public ResponseEntity<?> signup(@RequestBody SignupRequest request ) {
 
-        return ResponseEntity.ok(
-                authService.signup(request)
-        );
+        return ResponseEntity.ok(authService.signup(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(
-            @RequestBody LoginRequest request
-    ) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-        String token =
-                authService.login(request);
+        String token =authService.login(request);
 
-        return ResponseEntity.ok(
-                Map.of("token", token)
-        );
+        return ResponseEntity.ok( Map.of("token", token));
     }
+    @PostMapping("/logout")
+        public ResponseEntity<?> logout() {
+        // JWT is stateless — logout is handled client-side by deleting the token
+        return ResponseEntity.ok(Map.of("message", "Logged out"));
+        }
 }

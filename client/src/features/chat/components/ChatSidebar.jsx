@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 
+
 const rooms = [
   { id: 1, name: "General Chat", unread: 0 },
   { id: 2, name: "Design Talk", unread: 3 },
@@ -8,13 +9,6 @@ const rooms = [
   { id: 4, name: "Product", unread: 0 },
 ];
 
-const dms = [
-  { id: 1, name: "Arun Kumar", initials: "AK", online: true },
-  { id: 2, name: "Sindhu R", initials: "SR", online: false },
-];
-
-// viewBox is cropped to just the two bubbles + cube area (x:148 y:178 w:394 h:210)
-// so the logo fills the container instead of sitting tiny inside the original 690×790 canvas
 const PigeonLogo = () => (
   <svg
     viewBox="148 178 394 210"
@@ -57,10 +51,7 @@ const PigeonLogo = () => (
         <stop offset="100%" stopColor="#7C3AED" stopOpacity="0" />
       </radialGradient>
     </defs>
-
     <ellipse cx="340" cy="270" rx="180" ry="130" fill="url(#pl-glow)" />
-
-    {/* Left bubble */}
     <rect
       x="148"
       y="178"
@@ -78,8 +69,6 @@ const PigeonLogo = () => (
       fill="url(#pl-shine)"
     />
     <path d="M 190,326 L 175,368 L 228,326" fill="url(#pl-left-bubble)" />
-
-    {/* Right bubble */}
     <rect
       x="350"
       y="178"
@@ -97,8 +86,6 @@ const PigeonLogo = () => (
       fill="url(#pl-shine)"
     />
     <path d="M 490,326 L 505,368 L 452,326" fill="url(#pl-right-bubble)" />
-
-    {/* Cube faces */}
     <polygon
       points="340,220 410,258 340,296 270,258"
       fill="url(#pl-cube-top)"
@@ -111,8 +98,6 @@ const PigeonLogo = () => (
       points="410,258 340,296 340,366 410,328"
       fill="url(#pl-cube-right)"
     />
-
-    {/* Cube edges */}
     <polyline
       points="270,258 340,220 410,258"
       fill="none"
@@ -155,15 +140,11 @@ const PigeonLogo = () => (
       strokeWidth="0.9"
       strokeOpacity="0.7"
     />
-
-    {/* Apex */}
     <ellipse cx="340" cy="220" rx="16" ry="16" fill="url(#pl-apex)" />
     <circle cx="340" cy="220" r="4" fill="#F0EEFF" />
     <circle cx="270" cy="258" r="2.8" fill="#C4B5FD" />
     <circle cx="410" cy="258" r="2.8" fill="#C4B5FD" />
     <circle cx="340" cy="366" r="3" fill="#3B0764" />
-
-    {/* Shine lines */}
     <line
       x1="280"
       y1="238"
@@ -182,8 +163,6 @@ const PigeonLogo = () => (
       strokeWidth="0.4"
       strokeOpacity="0.1"
     />
-
-    {/* Dashed orbit */}
     <circle
       cx="340"
       cy="220"
@@ -194,8 +173,6 @@ const PigeonLogo = () => (
       strokeOpacity="0.22"
       strokeDasharray="2 6"
     />
-
-    {/* Bubble borders */}
     <rect
       x="148"
       y="178"
@@ -228,8 +205,6 @@ const PigeonLogo = () => (
       strokeOpacity="0.6"
       strokeLinecap="round"
     />
-
-    {/* Typing dots */}
     <circle cx="205" cy="252" r="8" fill="white" fillOpacity="0.06" />
     <circle cx="233" cy="252" r="8" fill="white" fillOpacity="0.06" />
     <circle cx="261" cy="252" r="8" fill="white" fillOpacity="0.06" />
@@ -285,27 +260,23 @@ const SettingsIcon = () => (
   </svg>
 );
 
-function ChatSidebar() {
+function ChatSidebar({ user, users = [] }) {
   const [activeRoom, setActiveRoom] = useState(1);
+  const otherUsers = users.filter((u) => u.username !== user?.username);
 
   return (
     <div className="flex flex-col h-full">
       {/* Brand */}
       <div className="flex items-center gap-3 px-4 py-4 border-b border-zinc-800/50">
-        {/* Logo — dark bg so gradients render correctly, cropped viewBox fills container */}
         <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0 bg-[#04040D]">
           <PigeonLogo />
         </div>
-
-        {/* App name — plain semibold, no italic */}
         <span className="flex-1 text-base font-semibold text-zinc-100 tracking-tight">
           Pigeon
         </span>
-
-        {/* Compose */}
         <button
           className="w-7 h-7 rounded-md flex items-center justify-center text-zinc-400
-            border border-zinc-700/60 hover:bg-zinc-800 hover:text-zinc-200 transition-colors flex-shrink-0"
+          border border-zinc-700/60 hover:bg-zinc-800 hover:text-zinc-200 transition-colors flex-shrink-0"
           aria-label="New message"
         >
           <EditIcon />
@@ -314,7 +285,10 @@ function ChatSidebar() {
 
       {/* Search */}
       <div className="px-3 pt-3 pb-1.5">
-        <div className="flex items-center gap-2 bg-zinc-800/50 border border-zinc-700/40 rounded-lg px-2.5 py-2 cursor-text">
+        <div
+          className="flex items-center gap-2 bg-zinc-800/50 border border-zinc-700/40
+          rounded-lg px-2.5 py-2 cursor-text"
+        >
           <span className="text-zinc-500">
             <SearchIcon />
           </span>
@@ -338,15 +312,13 @@ function ChatSidebar() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.04, duration: 0.2 }}
             onClick={() => setActiveRoom(room.id)}
-            className={`
-              w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-left
-              border transition-colors duration-150
+            className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg
+              text-left border transition-colors duration-150
               ${
                 activeRoom === room.id
                   ? "bg-zinc-800/70 border-zinc-700/40 text-zinc-100"
                   : "border-transparent text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200"
-              }
-            `}
+              }`}
           >
             <div className="flex items-center gap-2 min-w-0">
               <span
@@ -383,9 +355,14 @@ function ChatSidebar() {
 
       {/* DM list */}
       <div className="px-1.5 flex flex-col gap-px mb-1">
-        {dms.map((dm, i) => (
+        {otherUsers.length === 0 && (
+          <p className="text-[11px] text-zinc-600 px-3 py-1">
+            No other users yet
+          </p>
+        )}
+        {otherUsers.map((u, i) => (
           <motion.button
-            key={dm.id}
+            key={u.username}
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.16 + i * 0.04, duration: 0.2 }}
@@ -395,19 +372,27 @@ function ChatSidebar() {
           >
             <div className="relative flex-shrink-0">
               <div
-                className="w-5 h-5 rounded-full bg-zinc-800 border border-zinc-700/60
-                flex items-center justify-center text-[9px] font-medium text-zinc-400"
+                className="w-6 h-6 rounded-full bg-zinc-800 border border-zinc-700/60
+                flex items-center justify-center text-[10px] font-medium text-zinc-400"
               >
-                {dm.initials}
+                {u.username[0].toUpperCase()}
               </div>
-              {dm.online && (
-                <span
-                  className="absolute -bottom-px -right-px w-1.5 h-1.5 rounded-full bg-emerald-500
-                  border-[1.5px] border-zinc-900"
-                />
-              )}
+              <span
+                className={`absolute -bottom-px -right-px w-2 h-2 rounded-full
+                border-[1.5px] border-zinc-900
+                ${u.online ? "bg-emerald-500" : "bg-zinc-600"}`}
+              />
             </div>
-            <span className="text-sm tracking-tight">{dm.name}</span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm tracking-tight truncate">
+                {u.username}
+              </span>
+              <span
+                className={`text-[10px] ${u.online ? "text-emerald-500" : "text-zinc-600"}`}
+              >
+                {u.online ? "online" : "offline"}
+              </span>
+            </div>
           </motion.button>
         ))}
       </div>
@@ -418,11 +403,11 @@ function ChatSidebar() {
           className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60
           flex items-center justify-center text-xs font-semibold text-zinc-400 flex-shrink-0"
         >
-          B
+          {user?.username?.[0]?.toUpperCase() || "?"}
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-zinc-200 tracking-tight truncate">
-            Balaji
+            {user?.username || "..."}
           </p>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
@@ -431,7 +416,7 @@ function ChatSidebar() {
         </div>
         <button
           className="w-7 h-7 rounded-md flex items-center justify-center
-            text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300 transition-colors flex-shrink-0"
+          text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300 transition-colors flex-shrink-0"
           aria-label="Settings"
         >
           <SettingsIcon />
