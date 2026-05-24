@@ -44,9 +44,9 @@ A modern real-time full-stack chat application built using Spring Boot and React
 # Project Structure
 
 ```bash
-pigeon-chat/
+PIGEON-MESSAGER/
 ├── backend/
-│   └── src/main/java/com/pigeon/pigeon_chat/
+│   └── src/main/java/com/pigeon/pigeon_messager/
 │       ├── auth/
 │       │   ├── controller/
 │       │   ├── dto/

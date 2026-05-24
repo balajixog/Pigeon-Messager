@@ -32,7 +32,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(email)
                 .claim("username", username)
-                .claim("role", role)          // store raw: "ADMIN", not "ROLE_ADMIN"
+                .claim("role", role.toUpperCase())          // store raw: "ADMIN", not "ROLE_ADMIN"
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)

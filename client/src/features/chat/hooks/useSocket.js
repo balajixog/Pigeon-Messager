@@ -5,6 +5,7 @@ import api from "../../../api/axios";
 function useSocket(currentUser) {
   const [messages, setMessages] = useState([]);
   const [typingUser, setTypingUser] = useState("");
+  const [users, setUsers] = useState([]); // ← online status
   const clientRef = useRef(null);
 
   useEffect(() => {
@@ -12,25 +13,33 @@ function useSocket(currentUser) {
 
     let messageSub;
     let typingSub;
-    console.log("1. currentUser:", currentUser);
-    console.log("2. token:", localStorage.getItem("token"));
+    let onlineSub;
+
     const stompClient = createStompClient();
     clientRef.current = stompClient;
 
-    const fetchMessages = async () => {
+    // fetch messages + users in parallel
+    const init = async () => {
       try {
-        const response = await api.get("/messages");
-        setMessages(response.data.map((msg) => ({ ...msg, pending: false })));
+        const [messagesRes, usersRes] = await Promise.all([
+          api.get("/messages"),
+          api.get("/user"),
+        ]);
+        setMessages(
+          messagesRes.data.map((msg) => ({ ...msg, pending: false })),
+        );
+        setUsers(usersRes.data);
       } catch (error) {
-        console.error("Failed to load messages", error);
+        console.error("Init failed", error);
       }
     };
 
-    fetchMessages();
+    init();
 
     stompClient.onConnect = () => {
       console.log("Connected");
 
+      // messages
       messageSub = stompClient.subscribe("/topic/messages", (message) => {
         const newMessage = JSON.parse(message.body);
         setMessages((prev) => {
@@ -50,6 +59,7 @@ function useSocket(currentUser) {
         });
       });
 
+      // typing
       typingSub = stompClient.subscribe("/topic/typing", (message) => {
         const data = JSON.parse(message.body);
         if (data.typing && data.sender !== currentUser) {
@@ -58,6 +68,14 @@ function useSocket(currentUser) {
           setTypingUser("");
         }
       });
+
+      // online status — instant updates
+      onlineSub = stompClient.subscribe("/topic/online", (message) => {
+        const { username, online } = JSON.parse(message.body);
+        setUsers((prev) =>
+          prev.map((u) => (u.username === username ? { ...u, online } : u)),
+        );
+      });
     };
 
     stompClient.activate();
@@ -65,6 +83,7 @@ function useSocket(currentUser) {
     return () => {
       if (messageSub) messageSub.unsubscribe();
       if (typingSub) typingSub.unsubscribe();
+      if (onlineSub) onlineSub.unsubscribe();
       stompClient.deactivate();
     };
   }, [currentUser]);
@@ -102,7 +121,7 @@ function useSocket(currentUser) {
     });
   };
 
-  return { messages, sendMessage, typingUser, sendTyping };
+  return { messages, sendMessage, typingUser, sendTyping, users };
 }
 
 export default useSocket;
