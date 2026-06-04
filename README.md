@@ -281,5 +281,5 @@ http://localhost:5173
 
 # License
 
-Copyright (c) 2026 Balaji. All rights reserved.
+Copyright (c) 2026 Balaji Akshay. All rights reserved.
 See [LICENSE](./LICENSE) for details.
